@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+        <!--加载资源文件-->
+        <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+            <property name="basename" value="i18n"/>
+
+        </bean>
+        <!--配置路径，让请求路径直接到目的页不经过Dispatcher
+            path:请求路径
+            view-name：目的页
+            注：这个配置会让所有的请求忽略RequesstMapping(),直接去找目的路径，要是其和Mapping共存必须加一个注解
+        -->
+        <mvc:view-controller path="/direct" view-name="hello"></mvc:view-controller>
+        <!--共存注解-->
+        <mvc:annotation-driven></mvc:annotation-driven>
+
+        <bean id="conversionService" class="org.springframework.format.support.FormattingConversionService"></bean>
+
+
+        <!--用于文件上传  id值不能变 必须是 commonsMultipartResolver-->
+        <bean id="commonsMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+
+                <!--<property name="maxUploadSizePerFile" value="102400"/>  &lt;!&ndash;文件最大值&ndash;&gt;-->
+
+        </bean>
+
+        <!--配置拦截器          默认拦截全部-->
+        <mvc:interceptors>
+                <mvc:interceptor>
+                        <mvc:mapping path="/*"/>           <!--指定拦截的请求-->
+                        <mvc:exclude-mapping path="/fileUpdown"></mvc:exclude-mapping><!--指定不拦截的请求-->
+                        <bean class="Controller.Enitry.MyIntercepter"></bean><!--配置烂拦截器-->
+                </mvc:interceptor>
+        </mvc:interceptors>
+</beans>
